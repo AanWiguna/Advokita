@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advokita - Masuk dan Daftar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="assets/styles.css">
+    <style>
+        /* Gaya dasar: body gelap dan font sistem */
+        body {
+            background-color: #0f1724; /* Tailwind gray-900 */
+            color: #fff;
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+        }
+    </style>
+    <script defer src="assets/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabMasuk = document.getElementById('tab-masuk');
+            const tabDaftar = document.getElementById('tab-daftar');
+            const formMasuk = document.getElementById('form-masuk');
+            const formDaftar = document.getElementById('form-daftar');
+
+            // Function untuk mengaktifkan tab Masuk
+            const activateMasuk = () => {
+                // Menandai tab Masuk
+                tabMasuk.classList.add('bg-white', 'text-gray-900');
+                tabMasuk.classList.remove('bg-transparent', 'text-white');
+                // Menandai tab Daftar
+                tabDaftar.classList.add('bg-transparent', 'text-white');
+                tabDaftar.classList.remove('bg-white', 'text-gray-900');
+                // Tampilkan form Masuk, Sembunyikan form Daftar
+                formMasuk.classList.remove('hidden');
+                formDaftar.classList.add('hidden');
+            };
+
+            // Function untuk mengaktifkan tab Daftar
+            const activateDaftar = () => {
+                // Menandai tab Daftar
+                tabDaftar.classList.add('bg-white', 'text-gray-900');
+                tabDaftar.classList.remove('bg-transparent', 'text-white');
+                // Menandai tab Masuk
+                tabMasuk.classList.add('bg-transparent', 'text-white');
+                tabMasuk.classList.remove('bg-white', 'text-gray-900');
+                // Tampilkan form Daftar, Sembunyikan form Masuk
+                formDaftar.classList.remove('hidden');
+                formMasuk.classList.add('hidden');
+            };
+
+            // Listener untuk tombol tab
+            tabMasuk.addEventListener('click', activateMasuk);
+            tabDaftar.addEventListener('click', activateDaftar);
+            
+            // Tampilan default saat memuat halaman adalah Masuk
+            activateMasuk(); 
+        });
+    </script>
+</head>
+<body class="bg-gray-900 text-white">
+
+<div class="min-h-screen flex flex-col items-center pt-10 px-4">
+    <header class="text-center mb-8 relative">
+        <div class="flex items-center justify-center mb-2">
+            <img src="logo.png" alt="Advokita" class="w-8 h-8 text-white mr-2 object-contain" />
+            <span class="text-2xl font-bold">Advokita</span>
+        </div>
+        <h1 class="text-3xl font-bold mb-1">Mulai Sekarang!</h1>
+        <p class="text-gray-400 text-sm">Asisten Hukum Digital untuk Kita</p>
+    </header>
+
+    <div class="bg-gray-800 p-6 rounded-t-3xl shadow-2xl w-full max-w-md flex-grow lg:flex-grow-0 lg:mt-6 lg:rounded-3xl card-enter">
+        
+        <div class="flex bg-gray-900 rounded-xl p-1 mb-6">
+            <button class="flex-1 py-2 rounded-xl font-semibold transition duration-200" id="tab-masuk">Masuk</button>
+            <button class="flex-1 py-2 rounded-xl font-semibold transition duration-200" id="tab-daftar">Daftar</button>
+        </div>
+
+        <div id="form-masuk" class="space-y-4">
+            <input type="email" placeholder="Email" class="w-full p-3 bg-gray-900 rounded-lg text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <div class="relative">
+                <input type="password" placeholder="Password" class="w-full p-3 bg-gray-900 rounded-lg text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10">
+                <button data-action="togglePassword" aria-pressed="false" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" title="Tampilkan/ Sembunyikan password">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                </button>
+            </div>
+            
+            <div class="flex justify-between items-center text-sm pt-2">
+                <label class="flex items-center text-gray-400">
+                    <input type="checkbox" class="form-checkbox h-4 w-4 bg-gray-700 border-gray-600 rounded text-blue-500 mr-2">
+                    Ingat Saya
+                </label>
+                <a href="#" class="text-blue-400 hover:text-blue-300">Lupa Password ?</a>
+            </div>
+
+            <button data-action="login" class="w-full p-4 bg-gradient-to-r from-[#0ea5e9] to-[#00c2a8] hover:brightness-95 rounded-xl text-white font-bold text-lg shadow-lg mt-4 button-animated">
+                Log In
+            </button>
+            
+            <p class="text-center text-sm text-gray-500 py-2">Atau</p>
+            
+            <button data-action="oauth" class="w-full p-3 border border-gray-700 hover:bg-gray-700 rounded-xl text-white font-semibold flex items-center justify-center">
+                <img src="https://img.icons8.com/color/24/000000/google-logo.png" alt="Google" class="mr-3"/>
+                Lanjutkan dengan Google
+            </button>
+            <button data-action="oauth" class="w-full p-3 border border-gray-700 hover:bg-gray-700 rounded-xl text-white font-semibold flex items-center justify-center mt-3 button-animated">
+                <img src="https://img.icons8.com/fluency/24/000000/facebook-new.png" alt="Facebook" class="mr-3"/>
+                Lanjutkan dengan Facebook
+            </button>
+        </div>
+
+        <div id="form-daftar" class="hidden space-y-4">
+             <input type="text" placeholder="Nama Pengguna" class="w-full p-3 bg-gray-900 rounded-lg text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+             <input type="date" placeholder="Tanggal Lahir" class="w-full p-3 bg-gray-900 rounded-lg text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+             <input type="email" placeholder="Email" class="w-full p-3 bg-gray-900 rounded-lg text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+             <div class="relative">
+                 <input type="password" placeholder="Password" class="w-full p-3 bg-gray-900 rounded-lg text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10">
+                 <button data-action="togglePassword" aria-pressed="false" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" title="Tampilkan/ Sembunyikan password">
+                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                 </button>
+             </div>
+             <button data-action="signup" class="w-full p-4 bg-gradient-to-r from-[#0ea5e9] to-[#00c2a8] hover:brightness-95 rounded-xl text-white font-bold text-lg shadow-lg mt-4 button-animated">
+                 Daftar
+             </button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
