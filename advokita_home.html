@@ -10,9 +10,23 @@
         body {
             font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
         }
-        /* Kelas untuk transisi sidebar */
-        .sidebar-open {
+        /* Sidebar default tersembunyi (di luar layar kiri) */
+        #sidebar {
+            transform: translateX(-100%);
+        }
+        /* Sidebar muncul ketika class sidebar-open ditambahkan */
+        #sidebar.sidebar-open {
             transform: translateX(0);
+        }
+        /* Overlay default tersembunyi */
+        #overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        #overlay.active {
+            opacity: 0.5;
+            pointer-events: auto;
         }
     </style>
     <script defer src="assets/app.js"></script>
@@ -24,32 +38,65 @@
             const historyToggleBtn = document.getElementById('history-toggle');
             const historyList = document.getElementById('history-list');
 
-            // Toggle Sidebar
+            // Toggle Sidebar - sidebar tersembunyi by default
             menuBtn.addEventListener('click', () => {
-                sidebar.classList.toggle('sidebar-open');
-                overlay.classList.toggle('hidden');
+                const isOpen = sidebar.classList.contains('sidebar-open');
+                if (isOpen) {
+                    // Tutup sidebar
+                    sidebar.classList.remove('sidebar-open');
+                    overlay.classList.remove('active');
+                } else {
+                    // Buka sidebar
+                    sidebar.classList.add('sidebar-open');
+                    overlay.classList.add('active');
+                }
             });
             
+            // Klik overlay untuk menutup sidebar
             overlay.addEventListener('click', () => {
                 sidebar.classList.remove('sidebar-open');
-                overlay.classList.add('hidden');
+                overlay.classList.remove('active');
             });
 
-            // Fungsionalitas Riwayat (Sembunyikan/Tampilkan)
+            // Fungsionalitas Riwayat - Default tersembunyi, tampil saat diklik
             historyToggleBtn.addEventListener('click', () => {
                 const isHidden = historyList.classList.toggle('hidden');
                 historyToggleBtn.textContent = isHidden ? 'Tampilkan' : 'Sembunyikan';
                 historyToggleBtn.setAttribute('aria-expanded', !isHidden);
             });
+
+            // Pastikan history list tersembunyi saat load
+            if(historyList) {
+                historyList.classList.add('hidden');
+                historyToggleBtn.textContent = 'Tampilkan';
+                historyToggleBtn.setAttribute('aria-expanded', 'false');
+            }
+
+            // Pastikan sidebar dan overlay tersembunyi saat load
+            sidebar.classList.remove('sidebar-open');
+            overlay.classList.remove('active');
         });
     </script>
 </head>
 <body class="bg-gray-900 text-white">
 
-<div id="overlay" class="fixed inset-0 bg-black opacity-50 hidden z-40"></div>
+<!-- Overlay gelap yang muncul ketika sidebar terbuka -->
+<div id="overlay" class="fixed inset-0 bg-black z-40"></div>
 
-<div id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-gray-800 shadow-xl transform -translate-x-full transition-transform duration-300 z-50 card-enter">
+<!-- Sidebar tersembunyi by default -->
+<div id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-gray-800 shadow-xl transition-transform duration-300 z-50">
     <div class="p-4 flex flex-col h-full">
+        <!-- Header sidebar dengan tombol close -->
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center">
+                <img src="logo.png" alt="Advokita" class="w-6 h-6 mr-2 object-contain">
+                <span class="text-lg font-bold">Menu</span>
+            </div>
+            <button id="close-sidebar" class="text-gray-400 hover:text-white p-1">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
         <div class="relative mb-6">
             <input type="text" placeholder="Telusuri Riwayat" class="w-full p-2 pl-10 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none">
             <svg class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -62,43 +109,48 @@
 
         <div class="flex items-center justify-between mb-3">
             <h3 class="text-sm font-semibold uppercase text-gray-400">Riwayat</h3>
-            <button id="history-toggle" aria-expanded="false" class="text-xs text-gray-400 hover:text-white px-2 py-1 rounded-md">Tampilkan</button>
+            <button id="history-toggle" aria-expanded="false" class="text-xs text-gray-400 hover:text-white px-2 py-1 rounded-md bg-gray-700/50 hover:bg-gray-700">Tampilkan</button>
         </div>
+        <!-- History list default tersembunyi -->
         <ul id="history-list" class="space-y-3 flex-grow overflow-y-auto pb-4 hidden">
-            </ul>
+        </ul>
 
         <a href="advokita_saved.html" class="flex items-center text-lg text-white hover:text-blue-400 mt-6 pt-4 border-t border-gray-700">
             <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
             Pasal Tersimpan
+        </a>
+
+        <a href="advokita_auth_only.html" class="flex items-center text-lg text-red-400 hover:text-red-300 mt-4 pt-4 border-t border-gray-700">
+            <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+            Keluar
         </a>
     </div>
 </div>
 
 <div id="chatbot-page" class="min-h-screen flex flex-col">
     <header class="flex justify-between items-center p-4 bg-gray-900 border-b border-gray-700 z-30 fade-in-up card-enter">
-        <button id="menu-btn" class="text-white p-1">
+        <button id="menu-btn" class="text-white p-1 hover:bg-gray-800 rounded-lg transition" title="Buka menu">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
         </button>
         <div class="flex items-center">
             <img src="logo.png" alt="Advokita" class="w-6 h-6 mr-1 object-contain">
             <span class="text-xl font-bold">Advokita</span>
         </div>
-        <div class="relative">
-            <button id="general-dropdown-btn" class="flex items-center p-1 bg-gray-700 rounded-full text-sm" aria-haspopup="true" aria-expanded="false">
-                <span id="general-selected">Umum</span>
-                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-            </button>
-            <ul id="general-dropdown" class="absolute right-0 mt-2 w-36 bg-gray-800 rounded-lg border border-gray-700 p-2 shadow-lg hidden z-50" role="menu" aria-hidden="true">
-                <li class="px-2 py-1 rounded hover:bg-gray-700 cursor-pointer" data-value="umum">Umum</li>
-                <li class="px-2 py-1 rounded hover:bg-gray-700 cursor-pointer" data-value="presisi">Presisi</li>
-            </ul>
+        <div class="flex items-center gap-3">
+            <div class="relative">
+                <button id="general-dropdown-btn" class="flex items-center p-1 px-3 bg-gray-700 rounded-full text-sm hover:bg-gray-600 transition" aria-haspopup="true" aria-expanded="false">
+                    <span id="general-selected">Umum</span>
+                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <ul id="general-dropdown" class="absolute right-0 mt-2 w-36 bg-gray-800 rounded-lg border border-gray-700 p-2 shadow-lg hidden z-50" role="menu" aria-hidden="true">
+                    <li class="px-2 py-1 rounded hover:bg-gray-700 cursor-pointer" data-value="umum">Umum</li>
+                    <li class="px-2 py-1 rounded hover:bg-gray-700 cursor-pointer" data-value="presisi">Presisi</li>
+                </ul>
+            </div>
+            <a href="advokita_profile.html" class="rounded-full bg-gray-700 p-1 inline-flex items-center hover:bg-gray-600 transition" title="Profil saya">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            </a>
         </div>
-                <a href="advokita_profile.html" class="rounded-full bg-gray-700 p-1 inline-flex items-center" title="Profil saya">
-                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                </a>
-        <nav class="flex items-center gap-3 ml-4 fade-in-up">
-            <a href="advokita_auth_only.html" class="text-sm px-3 py-1 rounded-full bg-gray-700/20 hover:bg-gray-700/40 transition">Keluar</a>
-        </nav>
     </header>
 
     <main class="flex-grow flex flex-col justify-center items-center p-4">
@@ -126,6 +178,14 @@
         <div class="text-center text-sm text-gray-400">Tip: tekan <strong>/</strong> untuk fokus ke kotak tanya.</div>
     </footer>
 </div>
+
+<script>
+    // Tambahan: tombol close sidebar
+    document.getElementById('close-sidebar')?.addEventListener('click', () => {
+        document.getElementById('sidebar').classList.remove('sidebar-open');
+        document.getElementById('overlay').classList.remove('active');
+    });
+</script>
 
 </body>
 </html>
